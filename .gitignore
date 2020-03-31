@@ -33,3 +33,6 @@ coverage.xml
 
 # Sphinx docs
 docs/_build/
+
+# Data directory
+data/
