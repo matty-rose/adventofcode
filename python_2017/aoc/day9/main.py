@@ -4,8 +4,9 @@ from aoc.helpers import DATA_DIR, parse_input
 
 data = DATA_DIR / "day9.txt"
 
+
 def remove_cancellations(s):
-    ret = ''
+    ret = ""
     total_len = len(s)
     idx = 0
     while idx < total_len:
@@ -16,8 +17,9 @@ def remove_cancellations(s):
             idx += 2
     return ret
 
+
 def remove_garbage(s):
-    ret = ''
+    ret = ""
     total_len = len(s)
     idx = 0
     garbage_count = 0
@@ -33,9 +35,11 @@ def remove_garbage(s):
             idx = new_idx + 1
     return ret, garbage_count
 
+
 def remove_commas(s):
     ret = s.replace(",", "")
     return ret
+
 
 def calc_score(s):
     total = 0
@@ -48,6 +52,7 @@ def calc_score(s):
             tally -= 1
     return total
 
+
 def part_one(s):
     no_cancels = remove_cancellations(s)
     no_garbage, _ = remove_garbage(no_cancels)
@@ -55,10 +60,12 @@ def part_one(s):
     final_score = calc_score(no_comma)
     return final_score
 
+
 def part_two(s):
     no_cancels = remove_cancellations(s)
     _, garbage_count = remove_garbage(no_cancels)
     return garbage_count
+
 
 if __name__ == "__main__":
     raw = parse_input(data)

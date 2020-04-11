@@ -3,7 +3,8 @@ from pathlib import Path
 
 from aoc.helpers import parse_input
 
-data_dir = Path('/home/matt/Documents/AoC/python_2017/data/day5.txt')
+data_dir = Path("/home/matt/Documents/AoC/python_2017/data/day5.txt")
+
 
 def part_one(proc_inp):
     final = len(proc_inp)
@@ -19,8 +20,10 @@ def part_one(proc_inp):
         steps += 1
     return steps
 
+
 def part_two(proc_inp):
     pass
+
 
 if __name__ == "__main__":
     raw_inp = parse_input(data_dir)

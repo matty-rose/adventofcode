@@ -3,7 +3,8 @@ from pathlib import Path
 
 from aoc.helpers import parse_input
 
-data = Path('data/day6.txt')
+data = Path("data/day6.txt")
+
 
 def redistribute(max_idx, blocks):
     num_banks = len(blocks)
@@ -15,6 +16,7 @@ def redistribute(max_idx, blocks):
         cur_idx += 1
         num_blocks -= 1
     return blocks
+
 
 def part_one(inp):
     states = [inp]
@@ -31,6 +33,7 @@ def part_one(inp):
             steps += 1
     return steps
 
+
 def part_two(inp):
     states = [inp]
     cur_state = inp.copy()
@@ -44,6 +47,7 @@ def part_two(inp):
             states.append(new_s)
             cur_state = new_s
     return states
+
 
 if __name__ == "__main__":
     raw_inp = parse_input(data)

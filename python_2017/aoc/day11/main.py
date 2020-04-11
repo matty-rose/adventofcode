@@ -11,8 +11,9 @@ default_move_dict = {
     "ne": [(1, 0), (1, 1)],
     "nw": [(-1, 0), (-1, 1)],
     "se": [(1, -1), (1, 0)],
-    "sw": [(-1, -1), (-1, 0)]
+    "sw": [(-1, -1), (-1, 0)],
 }
+
 
 def get_steps(p):
     step_count = 0
@@ -23,7 +24,7 @@ def get_steps(p):
         step_count = abs(y)
     else:
         while x != 0:
-            even_col = (x % 2 == 0)
+            even_col = x % 2 == 0
             if (x > 0) and (y > 0):
                 move = default_move_dict["sw"]
             elif (x > 0) and (y < 0):
@@ -38,23 +39,25 @@ def get_steps(p):
         step_count += abs(y)
     return step_count
 
+
 def part_one(steps):
     start_pos = (0, 0)
     x, y = start_pos
     for s in steps:
-        even_col = (x % 2 == 0)
+        even_col = x % 2 == 0
         ms = default_move_dict[s]
         dx, dy = ms[1] if even_col else ms[0]
         x, y = x + dx, y + dy
     steps = get_steps((x, y))
     return steps
 
+
 def part_two(steps):
     start_pos = (0, 0)
     x, y = start_pos
     cur_max_steps = 0
     for s in steps:
-        even_col = (x % 2 == 0)
+        even_col = x % 2 == 0
         ms = default_move_dict[s]
         dx, dy = ms[1] if even_col else ms[0]
         x, y = x + dx, y + dy
@@ -62,6 +65,7 @@ def part_two(steps):
         if new_steps > cur_max_steps:
             cur_max_steps = new_steps
     return cur_max_steps
+
 
 if __name__ == "__main__":
     raw = parse_input(data)

@@ -5,6 +5,7 @@ from functools import reduce
 
 data = DATA_DIR / "day10.txt"
 
+
 def convert_str_to_ascii(s, end=[17, 31, 73, 47, 23]):
     ret_list = []
     for char in s:
@@ -13,6 +14,7 @@ def convert_str_to_ascii(s, end=[17, 31, 73, 47, 23]):
         ret_list.append(val)
     return ret_list
 
+
 def do_len_loops(lens, num_loops):
     max_val = 256
     vals = list(range(max_val))
@@ -20,13 +22,14 @@ def do_len_loops(lens, num_loops):
     for _ in range(num_loops):
         for l in lens:
             vals = vals[:max_val] * 2
-            vals[pos:pos + l] = reversed(vals[pos:pos + l])
+            vals[pos : pos + l] = reversed(vals[pos : pos + l])
             remain = (pos + l) % max_val
             if pos + l >= max_val:
-                vals[:remain] = vals[max_val:max_val + remain]
+                vals[:remain] = vals[max_val : max_val + remain]
             pos = (pos + l + skip) % max_val
             skip += 1
     return vals[:max_val]
+
 
 def make_dense(vals, n=16):
     dense = []
@@ -37,11 +40,13 @@ def make_dense(vals, n=16):
         dense.append(bit)
     return dense
 
+
 def convert_to_hex(dense):
     ret = ""
     for i in dense:
         ret += hex(i)[2:].zfill(2)
     return ret
+
 
 def part_one(lens):
     max_val = 256
@@ -50,13 +55,14 @@ def part_one(lens):
     skip = 0
     for l in lens:
         vals = vals[:max_val] * 2
-        vals[pos:pos + l] = reversed(vals[pos:pos + l])
+        vals[pos : pos + l] = reversed(vals[pos : pos + l])
         remain = (pos + l) % max_val
         if pos + l >= max_val:
-            vals[:remain] = vals[max_val:max_val + remain]
+            vals[:remain] = vals[max_val : max_val + remain]
         pos = (pos + l + skip) % (max_val)
         skip += 1
     return vals[0] * vals[1]
+
 
 def part_two(s):
     lens = convert_str_to_ascii(s)
@@ -64,6 +70,7 @@ def part_two(s):
     dense_hash = make_dense(final_vals)
     hex_string = convert_to_hex(dense_hash)
     return hex_string
+
 
 if __name__ == "__main__":
     raw = parse_input(data)

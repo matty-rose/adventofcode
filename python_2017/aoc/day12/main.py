@@ -5,6 +5,7 @@ import random
 
 data = DATA_DIR / "day12.txt"
 
+
 def proc_raw(raw):
     ret = {}
     for l in raw:
@@ -13,6 +14,7 @@ def proc_raw(raw):
         comms = [int(i) for i in l[1].split(", ")]
         ret[prog] = comms
     return ret
+
 
 def get_connected(program, data, current_list):
     children = data[program]
@@ -24,10 +26,12 @@ def get_connected(program, data, current_list):
             current_list = get_connected(c, data, current_list)
     return current_list
 
+
 def part_one(proc, p=0):
     all_progs = [p]
     all_connected = set(get_connected(p, proc, all_progs))
     return len(all_connected)
+
 
 def part_two(proc):
     num_groups = 0
@@ -38,6 +42,7 @@ def part_two(proc):
         remaining_progs = remaining_progs - el_group
         num_groups += 1
     return num_groups
+
 
 if __name__ == "__main__":
     raw = parse_input(data)

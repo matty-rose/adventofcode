@@ -5,12 +5,14 @@ from typing import List
 
 data = DATA_DIR / "day7.txt"
 
+
 class Node:
-    def __init__(self, name: str, data: int, parent=None, children: List=[]):
+    def __init__(self, name: str, data: int, parent=None, children: List = []):
         self.name = name
         self.data = data
         self.parent = parent
         self.children = children
+
 
 class Tree:
     def __init__(self, root_name: str, tower_dict: dict):
@@ -28,6 +30,7 @@ class Tree:
                 child_nodes.append(new_node)
         return child_nodes
 
+
 def process_raw(raw):
     stripped = [p.strip() for p in raw]
     ret = {}
@@ -39,6 +42,7 @@ def process_raw(raw):
         ret[name] = {"weight": weight, "above": above}
     return ret
 
+
 def find_root(program_dict):
     children = [val["above"] for val in program_dict.values()]
     children_flattened = set([c for l in children for c in l])
@@ -46,20 +50,24 @@ def find_root(program_dict):
     root = programs - children_flattened
     return root.pop()
 
+
 def get_sum_above(node):
     above_sum = 0
     for c in node.children:
         above_sum += c.data + get_sum_above(c)
     return above_sum
 
+
 def make_tree(program_dict):
     root = find_root(program_dict)
     tree = Tree(root, program_dict)
     return tree
 
+
 def part_one(proc):
     bottom_program = find_root(proc)
     return bottom_program
+
 
 def part_two(proc):
     tree = make_tree(proc)

@@ -4,6 +4,7 @@ from aoc.helpers import parse_input, DATA_DIR
 
 dpath = DATA_DIR / "day8.txt"
 
+
 def proc_line(line):
     l = line.strip()
     split = l.split(" ")
@@ -11,9 +12,10 @@ def proc_line(line):
         "register": split[0],
         "op": split[1],
         "val": int(split[2]),
-        "cond": " ".join(split[3:])
+        "cond": " ".join(split[3:]),
     }
     return ret
+
 
 def part_one(instructions):
     registers = {r: 0 for r in list(set([ins["register"] for ins in instructions]))}
@@ -32,6 +34,7 @@ def part_one(instructions):
                 continue
     max_val = max(registers.values())
     return max_val
+
 
 def part_two(instructions):
     registers = {r: 0 for r in list(set([ins["register"] for ins in instructions]))}
@@ -54,6 +57,7 @@ def part_two(instructions):
                 print("This operation isn't valid")
                 continue
     return cur_max
+
 
 if __name__ == "__main__":
     raw_inp = parse_input(dpath)
