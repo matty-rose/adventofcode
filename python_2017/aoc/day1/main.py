@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List
 
 import numpy
+
 from aoc.helpers import parse_input
 
 input_dir = Path("/home/matt/Documents/AoC/python_2017/data")
