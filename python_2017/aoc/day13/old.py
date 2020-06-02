@@ -1,7 +1,8 @@
 import os
-from pathlib import Path
-from aoc.helpers import parse_input, DATA_DIR
 from copy import deepcopy
+from pathlib import Path
+
+from aoc.helpers import DATA_DIR, parse_input
 
 data = DATA_DIR / "day13.txt"
 # data = DATA_DIR / "day13test.txt"
@@ -9,9 +10,9 @@ data = DATA_DIR / "day13.txt"
 
 def proc_raw(raw):
     ret = {}
-    for l in raw:
-        l = l.strip()
-        d, r = l.split(": ")
+    for line in raw:
+        line = line.strip()
+        d, r = line.split(": ")
         d, r = int(d), [[1] + [0 for _ in range(int(r) - 1)], True]
         ret[d] = r
     return ret

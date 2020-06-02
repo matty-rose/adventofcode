@@ -1,8 +1,8 @@
+import itertools as it
 import os
 from pathlib import Path
-import itertools as it
 
-from aoc.helpers import *
+from aoc.helpers import DATA_DIR, parse_input
 
 
 def get_2d_input():

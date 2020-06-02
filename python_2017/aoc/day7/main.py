@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
-from aoc.helpers import parse_input, DATA_DIR
 from typing import List
+
+from aoc.helpers import DATA_DIR, parse_input
 
 data = DATA_DIR / "day7.txt"
 
@@ -45,7 +46,7 @@ def process_raw(raw):
 
 def find_root(program_dict):
     children = [val["above"] for val in program_dict.values()]
-    children_flattened = set([c for l in children for c in l])
+    children_flattened = set([child for leaf in children for child in leaf])
     programs = set(program_dict.keys())
     root = programs - children_flattened
     return root.pop()
@@ -74,8 +75,8 @@ def part_two(proc):
     cur_node = tree.root
     sums = [c.data + get_sum_above(c) for c in cur_node.children]
     prev_sums = sums.copy()
+    bad_idx = 0
     while True:
-        print(sums)
         if len(set(sums)) == 1:
             diff = prev_sums[bad_idx] - prev_sums[bad_idx - 1 % 3]
             return cur_node.data - diff

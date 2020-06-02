@@ -1,13 +1,14 @@
 import os
 from pathlib import Path
-from aoc.helpers import parse_input, DATA_DIR
+
+from aoc.helpers import DATA_DIR, parse_input
 
 dpath = DATA_DIR / "day8.txt"
 
 
 def proc_line(line):
-    l = line.strip()
-    split = l.split(" ")
+    line = line.strip()
+    split = line.split(" ")
     ret = {
         "register": split[0],
         "op": split[1],
@@ -61,6 +62,6 @@ def part_two(instructions):
 
 if __name__ == "__main__":
     raw_inp = parse_input(dpath)
-    proc = [proc_line(l) for l in raw_inp]
+    proc = [proc_line(line) for line in raw_inp]
     print(part_one(proc))
     print(part_two(proc))

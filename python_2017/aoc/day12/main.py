@@ -1,17 +1,18 @@
 import os
-from pathlib import Path
-from aoc.helpers import parse_input, DATA_DIR
 import random
+from pathlib import Path
+
+from aoc.helpers import DATA_DIR, parse_input
 
 data = DATA_DIR / "day12.txt"
 
 
 def proc_raw(raw):
     ret = {}
-    for l in raw:
-        l = l.strip().split(" <-> ")
-        prog = int(l[0])
-        comms = [int(i) for i in l[1].split(", ")]
+    for line in raw:
+        line = line.strip().split(" <-> ")
+        prog = int(line[0])
+        comms = [int(i) for i in line[1].split(", ")]
         ret[prog] = comms
     return ret
 

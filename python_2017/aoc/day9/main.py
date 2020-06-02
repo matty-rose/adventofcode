@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from aoc.helpers import DATA_DIR, parse_input
 
 data = DATA_DIR / "day9.txt"

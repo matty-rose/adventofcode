@@ -1,7 +1,8 @@
+import itertools
 from pathlib import Path
 from typing import Dict
-import itertools
-from aoc.helpers import parse_input, DATA_DIR
+
+from aoc.helpers import DATA_DIR, parse_input
 
 data: Path = DATA_DIR / "day13.txt"
 
@@ -28,8 +29,8 @@ def part_two(proc: Dict[int, int]) -> int:
 if __name__ == "__main__":
     raw = parse_input(data)
     proc: Dict[int, int] = {}
-    for l in raw:
-        n = list(map(int, l.strip().split(": ")))
+    for line in raw:
+        n = list(map(int, line.strip().split(": ")))
         proc[n[0]] = n[1]
 
     print(part_one(proc))

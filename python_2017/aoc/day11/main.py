@@ -1,7 +1,8 @@
+import math
 import os
 from pathlib import Path
-from aoc.helpers import parse_input, DATA_DIR
-import math
+
+from aoc.helpers import DATA_DIR, parse_input
 
 data = DATA_DIR / "day11.txt"
 

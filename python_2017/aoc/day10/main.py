@@ -1,7 +1,8 @@
 import os
-from pathlib import Path
-from aoc.helpers import DATA_DIR, parse_input
 from functools import reduce
+from pathlib import Path
+
+from aoc.helpers import DATA_DIR, parse_input
 
 data = DATA_DIR / "day10.txt"
 
@@ -20,13 +21,13 @@ def do_len_loops(lens, num_loops):
     vals = list(range(max_val))
     pos, skip = 0, 0
     for _ in range(num_loops):
-        for l in lens:
+        for length in lens:
             vals = vals[:max_val] * 2
-            vals[pos : pos + l] = reversed(vals[pos : pos + l])
-            remain = (pos + l) % max_val
-            if pos + l >= max_val:
+            vals[pos : pos + length] = reversed(vals[pos : pos + length])
+            remain = (pos + length) % max_val
+            if pos + length >= max_val:
                 vals[:remain] = vals[max_val : max_val + remain]
-            pos = (pos + l + skip) % max_val
+            pos = (pos + length + skip) % max_val
             skip += 1
     return vals[:max_val]
 
@@ -53,13 +54,13 @@ def part_one(lens):
     vals = list(range(max_val))
     pos = 0
     skip = 0
-    for l in lens:
+    for length in lens:
         vals = vals[:max_val] * 2
-        vals[pos : pos + l] = reversed(vals[pos : pos + l])
-        remain = (pos + l) % max_val
-        if pos + l >= max_val:
+        vals[pos : pos + length] = reversed(vals[pos : pos + length])
+        remain = (pos + length) % max_val
+        if pos + length >= max_val:
             vals[:remain] = vals[max_val : max_val + remain]
-        pos = (pos + l + skip) % (max_val)
+        pos = (pos + length + skip) % (max_val)
         skip += 1
     return vals[0] * vals[1]
 
