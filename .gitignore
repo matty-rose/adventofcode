@@ -36,3 +36,6 @@ docs/_build/
 
 # Data directory
 data/
+
+# Mypy cache
+.mypy_cache/
