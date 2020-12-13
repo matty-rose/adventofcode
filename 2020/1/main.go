@@ -31,13 +31,13 @@ func parse(location string) []int {
 
 func solvep1(inp []int) (int, int) {
 	p1, p2 := 0, len(inp)-1
-	var current_sum int
-	for current_sum != total {
-		current_sum = inp[p1] + inp[p2]
-		if current_sum < total {
-			p1 += 1
-		} else if current_sum > total {
-			p2 -= 1
+	var currentSum int
+	for currentSum != total {
+		currentSum = inp[p1] + inp[p2]
+		if currentSum < total {
+			p1++
+		} else if currentSum > total {
+			p2--
 		}
 	}
 	return inp[p1], inp[p2]
@@ -45,19 +45,19 @@ func solvep1(inp []int) (int, int) {
 
 func solvep2(inp []int) (int, int, int) {
 	p1, p2, p3 := 0, 1, len(inp)-1
-	var current_sum int
+	var currentSum int
 	flag := true
-	for current_sum != total {
-		current_sum = inp[p1] + inp[p2] + inp[p3]
-		if current_sum < total {
+	for currentSum != total {
+		currentSum = inp[p1] + inp[p2] + inp[p3]
+		if currentSum < total {
 			if flag {
-				p2 += 1
+				p2++
 			} else {
-				p1 += 1
+				p1++
 			}
 			flag = !flag
-		} else if current_sum > total {
-			p3 -= 1
+		} else if currentSum > total {
+			p3--
 		}
 	}
 	return inp[p1], inp[p2], inp[p3]

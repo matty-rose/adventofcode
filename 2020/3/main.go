@@ -28,15 +28,15 @@ func parse(location string) []string {
 
 func solve(inp []string, right, down int) int {
 	x, y := 0, 0
-	var tree_count int = 0
+	var treeCount int = 0
 	for y < len(inp)-1 {
 		x = (x + right) % len(inp[0])
 		y += down
 		if string(inp[y][x]) == "#" {
-			tree_count += 1
+			treeCount++
 		}
 	}
-	return tree_count
+	return treeCount
 }
 
 func p2(inp []string) int {
@@ -52,8 +52,8 @@ func p2(inp []string) int {
 func main() {
 	lines := parse("3/input.txt")
 	fmt.Println(lines)
-	p1_solution := solve(lines, 3, 1)
-	fmt.Printf("%d trees encountered in problem 1\n", p1_solution)
-	p2_solution := p2(lines)
-	fmt.Printf("%d trees encountered in problem 2\n", p2_solution)
+	p1Solution := solve(lines, 3, 1)
+	fmt.Printf("%d trees encountered in problem 1\n", p1Solution)
+	p2Solution := p2(lines)
+	fmt.Printf("%d trees encountered in problem 2\n", p2Solution)
 }
