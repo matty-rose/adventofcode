@@ -5,8 +5,22 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
+	"regexp"
+	"strconv"
 	"strings"
 )
+
+type passport struct {
+	Byr *int64
+	Iyr *int64
+	Eyr *int64
+	Hgt *string
+	Hcl *string
+	Ecl *string
+	Pid *string
+	Cid *string
+}
 
 func getRequiredFields() []string {
 	return []string{"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"}
@@ -39,63 +53,166 @@ func groupPassports(lines []string) []string {
 	return out
 }
 
-func checkValidPassport(passport string) bool {
-	requiredFields := getRequiredFields()
-	var valid bool = true
-	for _, field := range requiredFields {
-		if !strings.Contains(passport, field) {
-			valid = false
+func contains(list []string, val string) bool {
+	for _, item := range list {
+		if item == val {
+			return true
 		}
 	}
-	return valid
+	return false
 }
 
-func solveP1(passports []string) int {
-	var count int = 0
+func parsePassportString(p string) passport {
+	split := strings.Split(p, " ")
+	var pp passport
+
+	for _, s := range split {
+		if s == "" {
+			continue
+		}
+		ssplit := strings.Split(s, ":")
+		if contains([]string{"byr", "iyr", "eyr"}, ssplit[0]) {
+			intval, err := strconv.ParseInt(ssplit[1], 10, 64)
+			if err != nil {
+				log.Fatal(err)
+			}
+			reflect.ValueOf(&pp).Elem().FieldByName(strings.Title(ssplit[0])).Set(reflect.ValueOf(&intval))
+		} else {
+			reflect.ValueOf(&pp).Elem().FieldByName(strings.Title(ssplit[0])).Set(reflect.ValueOf(&ssplit[1]))
+		}
+	}
+	return pp
+}
+
+func parsePassports(passports []string) []passport {
+	var out []passport
+	for _, p := range passports {
+		out = append(out, parsePassportString(p))
+	}
+	return out
+}
+
+func solveP1(passports []passport) int {
+	validCount := 0
 	for _, pp := range passports {
-		if checkValidPassport(pp) {
-			count++
+		nilCount := 0
+		if pp.Byr == nil {
+			nilCount++
+		}
+		if pp.Eyr == nil {
+			nilCount++
+		}
+		if pp.Iyr == nil {
+			nilCount++
+		}
+		if pp.Hgt == nil {
+			nilCount++
+		}
+		if pp.Hcl == nil {
+			nilCount++
+		}
+		if pp.Ecl == nil {
+			nilCount++
+		}
+		if pp.Pid == nil {
+			nilCount++
+		}
+		if nilCount == 0 {
+			validCount++
 		}
 	}
-	return count
+	return validCount
 }
 
-func solveP2(passports []string) int {
+func solveP2(passports []passport) int {
+	validCount := 0
+	for _, pp := range passports {
+		nilCount := 0
+		if pp.Byr != nil {
+			if *pp.Byr > 2002 || *pp.Byr < 1920 {
+				fmt.Println("invalid byr: ", *pp.Byr)
+				continue
+			}
+		} else {
+			nilCount++
+		}
+		if pp.Iyr != nil {
+			if *pp.Iyr > 2020 || *pp.Iyr < 2010 {
+				fmt.Println("invalid iyr: ", *pp.Iyr)
+				continue
+			}
+		} else {
+			nilCount++
+		}
+		if pp.Eyr != nil {
+			if *pp.Eyr > 2030 || *pp.Eyr < 2020 {
+				fmt.Println("invalid eyr: ", *pp.Eyr)
+				continue
+			}
+		} else {
+			nilCount++
+		}
+		if pp.Hgt != nil {
+			hgt := *pp.Hgt
+			measurement := hgt[len(hgt)-2:]
+			val, _ := strconv.Atoi(hgt[:len(hgt)-2])
+			switch measurement {
+			case "cm":
+				if val < 150 || val > 193 {
+					fmt.Println("invalid hgt: ", *pp.Hgt)
+					continue
+				}
+			case "in":
+				if val < 59 || val > 76 {
+					fmt.Println("invalid hgt: ", *pp.Hgt)
+					continue
+				}
+			default:
+				continue
+			}
+		} else {
+			nilCount++
+		}
+		if pp.Hcl != nil {
+			match, _ := regexp.MatchString("#[a-fA-F0-9]{6}", *pp.Hcl)
+			if !match {
+				fmt.Println("invalid hcl: ", *pp.Hcl)
+				continue
+			}
+		} else {
+			nilCount++
+		}
+		if pp.Ecl != nil {
+			match, _ := regexp.MatchString("(amb)|(blu)|(brn)|(gry)|(grn)|(hzl)|(oth)", *pp.Ecl)
+			if !match {
+				fmt.Println("invalid ecl: ", *pp.Ecl)
+				continue
+			}
+		} else {
+			nilCount++
+		}
+		if pp.Pid != nil {
+			match, _ := regexp.MatchString("[0-9]{9}", *pp.Pid)
+			if !match {
+				fmt.Println("invalid pid: ", *pp.Pid)
+				continue
+			}
+		} else {
+			nilCount++
+		}
+		if nilCount == 0 {
+			validCount++
+		}
+	}
+	return validCount
 }
-
-// func parsePassportString(p string) passport {
-// 	split := strings.Split(p, " ")
-// 	var pp passport
-// 	passportMap := make(map[string]interface{})
-// 	for _, s := range split {
-// 		ssplit := strings.Split(s, ":")
-// 		if len(ssplit) > 1 {
-// 			passportMap[ssplit[0]] = ssplit[1]
-// 		}
-// 	}
-// 	fmt.Println(passportMap)
-// 	err := mapstructure.Decode(passportMap, &pp)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	fmt.Println(pp)
-// 	return pp
-// }
-
-// func parsePassports(passports []string) []passport {
-// 	var out []passport
-// 	for _, p := range passports {
-// 		out = append(out, parsePassportString(p))
-// 	}
-// 	return out
-// }
 
 func main() {
 	raw := rawParse("4/input.txt")
 	passportStrings := groupPassports(raw)
-	res := solveP1(passportStrings)
-	fmt.Println(res)
-	// parsePassports(passportStrings)
-	// passports := parsePassports(passportStrings)
-	// fmt.Println(passports)
+	passports := parsePassports(passportStrings)
+	res1 := solveP1(passports)
+	fmt.Println("Problem 1 result: ", res1)
+	res2 := solveP2(passports)
+	fmt.Println("Problem 2 result: ", res2)
 }
