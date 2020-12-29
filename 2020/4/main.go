@@ -128,26 +128,24 @@ func solveP2(passports []passport) int {
 	validCount := 0
 	for _, pp := range passports {
 		nilCount := 0
+		valid := true
 		if pp.Byr != nil {
 			if *pp.Byr > 2002 || *pp.Byr < 1920 {
-				fmt.Println("invalid byr: ", *pp.Byr)
-				continue
+				valid = false
 			}
 		} else {
 			nilCount++
 		}
 		if pp.Iyr != nil {
 			if *pp.Iyr > 2020 || *pp.Iyr < 2010 {
-				fmt.Println("invalid iyr: ", *pp.Iyr)
-				continue
+				valid = false
 			}
 		} else {
 			nilCount++
 		}
 		if pp.Eyr != nil {
 			if *pp.Eyr > 2030 || *pp.Eyr < 2020 {
-				fmt.Println("invalid eyr: ", *pp.Eyr)
-				continue
+				valid = false
 			}
 		} else {
 			nilCount++
@@ -159,16 +157,14 @@ func solveP2(passports []passport) int {
 			switch measurement {
 			case "cm":
 				if val < 150 || val > 193 {
-					fmt.Println("invalid hgt: ", *pp.Hgt)
-					continue
+					valid = false
 				}
 			case "in":
 				if val < 59 || val > 76 {
-					fmt.Println("invalid hgt: ", *pp.Hgt)
-					continue
+					valid = false
 				}
 			default:
-				continue
+				valid = false
 			}
 		} else {
 			nilCount++
@@ -176,8 +172,7 @@ func solveP2(passports []passport) int {
 		if pp.Hcl != nil {
 			match, _ := regexp.MatchString("#[a-fA-F0-9]{6}", *pp.Hcl)
 			if !match {
-				fmt.Println("invalid hcl: ", *pp.Hcl)
-				continue
+				valid = false
 			}
 		} else {
 			nilCount++
@@ -185,8 +180,7 @@ func solveP2(passports []passport) int {
 		if pp.Ecl != nil {
 			match, _ := regexp.MatchString("(amb)|(blu)|(brn)|(gry)|(grn)|(hzl)|(oth)", *pp.Ecl)
 			if !match {
-				fmt.Println("invalid ecl: ", *pp.Ecl)
-				continue
+				valid = false
 			}
 		} else {
 			nilCount++
@@ -194,13 +188,12 @@ func solveP2(passports []passport) int {
 		if pp.Pid != nil {
 			match, _ := regexp.MatchString("[0-9]{9}", *pp.Pid)
 			if !match {
-				fmt.Println("invalid pid: ", *pp.Pid)
-				continue
+				valid = false
 			}
 		} else {
 			nilCount++
 		}
-		if nilCount == 0 {
+		if nilCount == 0 && valid {
 			validCount++
 		}
 	}
