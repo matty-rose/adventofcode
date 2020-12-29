@@ -26,7 +26,7 @@ func splitPeople(group string) []string {
 	return people
 }
 
-func calculateGroupCount(group string) int {
+func getSets(group string) []mapset.Set {
 	people := splitPeople(group)
 	var sets []mapset.Set
 	for _, p := range people {
@@ -35,10 +35,35 @@ func calculateGroupCount(group string) int {
 			characterSlice[i] = p[i]
 		}
 		characterSet := mapset.NewSetFromSlice(characterSlice)
-		fmt.Println(characterSet)
-		sets = append(sets, characterSet)
+		if characterSet.Cardinality() != 0 {
+			sets = append(sets, characterSet)
+		}
 	}
-	var finalSet mapset.Set
+	return sets
+}
+
+func calculateUnionCount(group string) int {
+	sets := getSets(group)
+	finalSet := mapset.NewSet()
+	if len(sets) == 1 {
+		return sets[0].Cardinality()
+	}
+	for i := 0; i < len(sets)-1; i++ {
+		if i == 0 {
+			finalSet = sets[i].Union(sets[i+1])
+		} else {
+			finalSet = finalSet.Union(sets[i+1])
+		}
+	}
+	return finalSet.Cardinality()
+}
+
+func calculateIntersectCount(group string) int {
+	sets := getSets(group)
+	finalSet := mapset.NewSet()
+	if len(sets) == 1 {
+		return sets[0].Cardinality()
+	}
 	for i := 0; i < len(sets)-1; i++ {
 		if i == 0 {
 			finalSet = sets[i].Intersect(sets[i+1])
@@ -46,14 +71,30 @@ func calculateGroupCount(group string) int {
 			finalSet = finalSet.Intersect(sets[i+1])
 		}
 	}
-	fmt.Println(finalSet.Cardinality())
-	return 0
+	return finalSet.Cardinality()
+}
+
+func solveP1(groups []string) int {
+	var totalSum int
+	for _, g := range groups {
+		totalSum += calculateUnionCount(g)
+	}
+	return totalSum
+}
+
+func solveP2(groups []string) int {
+	var totalSum int
+	for _, g := range groups {
+		totalSum += calculateIntersectCount(g)
+	}
+	return totalSum
 }
 
 func main() {
 	raw := rawParse("6/input.txt")
 	groups := splitGroups(raw)
-	for _, g := range groups {
-		calculateGroupCount(g)
-	}
+	totalSumP1 := solveP1(groups)
+	fmt.Println("Total sum for problem 1: ", totalSumP1)
+	totalSumP2 := solveP2(groups)
+	fmt.Println("Total sum for problem 1: ", totalSumP2)
 }
