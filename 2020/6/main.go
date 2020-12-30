@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	mapset "github.com/deckarep/golang-set"
 	"io/ioutil"
 	"log"
 	"strings"
+
+	mapset "github.com/deckarep/golang-set"
 )
 
 func rawParse(location string) string {
