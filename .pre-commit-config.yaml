@@ -30,3 +30,12 @@ repos:
     hooks:
       - id: go-imports
       # - id: go-lint
+  - repo: local
+    hooks:
+      - id: rust-fmt
+        name: run rust fmt
+        language: system
+        entry: bash -c 'cd 2021 && exec cargo fmt'
+        pass_filenames: false
+        types: [rust]
+        files: ^2021/
