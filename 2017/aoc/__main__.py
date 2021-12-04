@@ -1,4 +1,5 @@
 import click
+
 from aoc.days import *
 from aoc.registry import COMMAND_REGISTRY
 
