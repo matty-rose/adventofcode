@@ -2,6 +2,7 @@ from typing import Any
 
 import click
 import numpy as np
+
 from aoc.registry import register
 
 INP = 289326

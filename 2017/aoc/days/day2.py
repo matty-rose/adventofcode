@@ -1,6 +1,7 @@
 import itertools as it
 
 import click
+
 from aoc.helpers import DATA_DIR, parse_input
 from aoc.registry import register
 
