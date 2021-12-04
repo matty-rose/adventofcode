@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "aoc"
+version = "0.1.0"
+description = ""
+authors = ["matty-rose <matthewrose153@gmail.com>"]
+license = "MIT"
+packages = [
+    { include = "aoc" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9.7,<3.11"
+numpy = "^1.21.4"
+click = "^8.0.3"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.910"
+black = "^21.11b1"
+flake8 = "^4.0.1"
+isort = "^5.10.1"
+autoflake = "^1.4"
+flake8-bugbear = "^21.11.29"
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/'''
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+use_parentheses = true
+line_length = 100
+known_third_party = ["aoc", "numpy", "setuptools"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
