@@ -1,12 +1,12 @@
-import os
-from pathlib import Path
+import click
 
 from aoc.helpers import DATA_DIR, parse_input
+from aoc.registry import register
 
 data = DATA_DIR / "day9.txt"
 
 
-def remove_cancellations(s):
+def remove_cancellations(s: str) -> str:
     ret = ""
     total_len = len(s)
     idx = 0
@@ -19,7 +19,7 @@ def remove_cancellations(s):
     return ret
 
 
-def remove_garbage(s):
+def remove_garbage(s: str) -> tuple[str, int]:
     ret = ""
     total_len = len(s)
     idx = 0
@@ -37,12 +37,12 @@ def remove_garbage(s):
     return ret, garbage_count
 
 
-def remove_commas(s):
+def remove_commas(s: str) -> str:
     ret = s.replace(",", "")
     return ret
 
 
-def calc_score(s):
+def calc_score(s: str) -> int:
     total = 0
     tally = 0
     for char in s:
@@ -54,7 +54,7 @@ def calc_score(s):
     return total
 
 
-def part_one(s):
+def part_one(s: str) -> int:
     no_cancels = remove_cancellations(s)
     no_garbage, _ = remove_garbage(no_cancels)
     no_comma = remove_commas(no_garbage)
@@ -62,14 +62,24 @@ def part_one(s):
     return final_score
 
 
-def part_two(s):
+def part_two(s: str) -> int:
     no_cancels = remove_cancellations(s)
     _, garbage_count = remove_garbage(no_cancels)
     return garbage_count
 
 
-if __name__ == "__main__":
-    raw = parse_input(data)
-    raw = raw[0].strip()
-    print(f"The total score of all groups in the input is {part_one(raw)}")
-    print(f"The total count of garbage characters is {part_two(raw)}")
+@register
+@click.command()
+@click.argument("part", type=int)
+def day9(part: int) -> None:
+    assert part in [
+        1,
+        2,
+    ], f"The part number {part} is not implemented, please enter either 1 or 2."
+    raw = parse_input(data)[0].strip()
+    if part == 1:
+        result = part_one(raw)
+        print(f"The total score of all groups in the input is {result}")
+    elif part == 2:
+        result = part_two(raw)
+        print(f"The total count of garbage characters is {result}")

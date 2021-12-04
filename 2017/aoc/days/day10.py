@@ -1,13 +1,14 @@
-import os
 from functools import reduce
-from pathlib import Path
+
+import click
 
 from aoc.helpers import DATA_DIR, parse_input
+from aoc.registry import register
 
 data = DATA_DIR / "day10.txt"
 
 
-def convert_str_to_ascii(s, end=[17, 31, 73, 47, 23]):
+def convert_str_to_ascii(s: str, end: tuple[int, ...] = (17, 31, 73, 47, 23)) -> list[int]:
     ret_list = []
     for char in s:
         ret_list.append(ord(char))
@@ -16,7 +17,7 @@ def convert_str_to_ascii(s, end=[17, 31, 73, 47, 23]):
     return ret_list
 
 
-def do_len_loops(lens, num_loops):
+def do_len_loops(lens: list[int], num_loops: int) -> list[int]:
     max_val = 256
     vals = list(range(max_val))
     pos, skip = 0, 0
@@ -32,7 +33,7 @@ def do_len_loops(lens, num_loops):
     return vals[:max_val]
 
 
-def make_dense(vals, n=16):
+def make_dense(vals: list[int], n: int = 16) -> list[int]:
     dense = []
     num_blocks = int(256 / n)
     for b in range(num_blocks):
@@ -42,14 +43,14 @@ def make_dense(vals, n=16):
     return dense
 
 
-def convert_to_hex(dense):
+def convert_to_hex(dense: list[int]) -> str:
     ret = ""
     for i in dense:
         ret += hex(i)[2:].zfill(2)
     return ret
 
 
-def part_one(lens):
+def part_one(lens: list[int]) -> int:
     max_val = 256
     vals = list(range(max_val))
     pos = 0
@@ -65,7 +66,7 @@ def part_one(lens):
     return vals[0] * vals[1]
 
 
-def part_two(s):
+def part_two(s: str) -> str:
     lens = convert_str_to_ascii(s)
     final_vals = do_len_loops(lens, num_loops=64)
     dense_hash = make_dense(final_vals)
@@ -73,9 +74,19 @@ def part_two(s):
     return hex_string
 
 
-if __name__ == "__main__":
+@register
+@click.command()
+@click.argument("part", type=int)
+def day10(part: int) -> None:
+    assert part in [
+        1,
+        2,
+    ], f"The part number {part} is not implemented, please enter either 1 or 2."
     raw = parse_input(data)
     raw_ints = [int(i) for i in raw[0].strip().split(",")]
-    print(f"The product of the first two numbers is {part_one(raw_ints)}")
-    actual_string = raw[0].strip()
-    print(f"The hexadecimal representation is {part_two(actual_string)}")
+    if part == 1:
+        result = part_one(raw_ints)
+        print(f"The product of the first two numbers is {result}")
+    elif part == 2:
+        result = part_two(raw[0].strip())  # type: ignore
+        print(f"The hexadecimal representation is {result}")
