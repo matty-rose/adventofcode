@@ -1,27 +1,36 @@
-import os
-from pathlib import Path
-from typing import List
+from typing import Any, Optional
+
+import click
 
 from aoc.helpers import DATA_DIR, parse_input
+from aoc.registry import register
 
 data = DATA_DIR / "day7.txt"
 
+Program = dict[str, dict[str, Any]]
+
 
 class Node:
-    def __init__(self, name: str, data: int, parent=None, children: List = []):
+    def __init__(
+        self,
+        name: str,
+        data: int,
+        parent: Optional["Node"] = None,
+        children: Optional[list["Node"]] = None,
+    ):
         self.name = name
         self.data = data
         self.parent = parent
-        self.children = children
+        self.children = children or []
 
 
 class Tree:
-    def __init__(self, root_name: str, tower_dict: dict):
+    def __init__(self, root_name: str, tower_dict: dict[str, Any]):
         self.data = tower_dict
         self.root = Node(root_name, self.data[root_name]["weight"])
         self.root.children = self.make_children(self.root)
 
-    def make_children(self, node: Node):
+    def make_children(self, node: Node) -> list[Node]:
         child_names = self.data[node.name]["above"]
         child_nodes = []
         if len(child_names) != 0:
@@ -32,7 +41,7 @@ class Tree:
         return child_nodes
 
 
-def process_raw(raw):
+def process_raw(raw: list[str]) -> Program:
     stripped = [p.strip() for p in raw]
     ret = {}
     for line in stripped:
@@ -44,7 +53,7 @@ def process_raw(raw):
     return ret
 
 
-def find_root(program_dict):
+def find_root(program_dict: Program) -> str:
     children = [val["above"] for val in program_dict.values()]
     children_flattened = set([child for leaf in children for child in leaf])
     programs = set(program_dict.keys())
@@ -52,25 +61,25 @@ def find_root(program_dict):
     return root.pop()
 
 
-def get_sum_above(node):
+def get_sum_above(node: Node) -> int:
     above_sum = 0
     for c in node.children:
         above_sum += c.data + get_sum_above(c)
     return above_sum
 
 
-def make_tree(program_dict):
+def make_tree(program_dict: Program) -> Tree:
     root = find_root(program_dict)
     tree = Tree(root, program_dict)
     return tree
 
 
-def part_one(proc):
+def part_one(proc: Program) -> str:
     bottom_program = find_root(proc)
     return bottom_program
 
 
-def part_two(proc):
+def part_two(proc: Program) -> int:
     tree = make_tree(proc)
     cur_node = tree.root
     sums = [c.data + get_sum_above(c) for c in cur_node.children]
@@ -86,11 +95,21 @@ def part_two(proc):
             bad_idx = sums.index(list(bad_sum)[0])
             cur_node = cur_node.children[bad_idx]
             sums = [c.data + get_sum_above(c) for c in cur_node.children]
-    return None
 
 
-if __name__ == "__main__":
+@register
+@click.command()
+@click.argument("part", type=int)
+def day7(part: int) -> None:
+    assert part in [
+        1,
+        2,
+    ], f"The part number {part} is not implemented, please enter either 1 or 2."
     raw_inp = parse_input(data)
     proc = process_raw(raw_inp)
-    print(f"The name of the bottom program is {part_one(proc)}.")
-    print(part_two(proc))
+    if part == 1:
+        result = part_one(proc)
+        print(f"The name of the bottom program for part 1 is {result}")
+    elif part == 2:
+        result = part_two(proc)  # type: ignore[assignment]
+        print(f"The solution for part 2 is {result}")

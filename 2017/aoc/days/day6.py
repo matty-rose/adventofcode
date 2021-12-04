@@ -1,12 +1,11 @@
-import os
-from pathlib import Path
+import click
+from aoc.helpers import DATA_DIR, parse_input
+from aoc.registry import register
 
-from aoc.helpers import parse_input
-
-data = Path("data/day6.txt")
+data = DATA_DIR / "day6.txt"
 
 
-def redistribute(max_idx, blocks):
+def redistribute(max_idx: int, blocks: list[int]) -> list[int]:
     num_banks = len(blocks)
     num_blocks = blocks[max_idx]
     blocks[max_idx] = 0
@@ -18,7 +17,7 @@ def redistribute(max_idx, blocks):
     return blocks
 
 
-def part_one(inp):
+def part_one(inp: list[int]) -> int:
     states = [inp]
     steps = 1
     cur_state = inp.copy()
@@ -34,7 +33,7 @@ def part_one(inp):
     return steps
 
 
-def part_two(inp):
+def part_two(inp: list[int]) -> int:
     states = [inp]
     cur_state = inp.copy()
     while True:
@@ -46,11 +45,21 @@ def part_two(inp):
         else:
             states.append(new_s)
             cur_state = new_s
-    return states
 
 
-if __name__ == "__main__":
+@register
+@click.command()
+@click.argument("part", type=int)
+def day6(part: int) -> None:
+    assert part in [
+        1,
+        2,
+    ], f"The part number {part} is not implemented, please enter either 1 or 2."
     raw_inp = parse_input(data)
     proc_inp = [int(i) for i in raw_inp[0].strip().split("\t")]
-    print(part_one(proc_inp))
-    print(part_two(proc_inp))
+    if part == 1:
+        result = part_one(proc_inp)
+        print(f"The solution for part 1 is {result}")
+    elif part == 2:
+        result = part_two(proc_inp)
+        print(f"The solution for part 2 is {result}")

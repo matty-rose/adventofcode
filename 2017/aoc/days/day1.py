@@ -1,17 +1,16 @@
-from typing import List
-
 import click
 from aoc.helpers import DATA_DIR, parse_input
+from aoc.registry import register
 
 
-def get_digit_list() -> List:
+def get_digit_list() -> list[int]:
     seq = parse_input(str(DATA_DIR / "day1.txt"))
     number_str = seq[0].strip()
     num_list = list(map(int, number_str))
     return num_list
 
 
-def part_one(num_list: List) -> int:
+def part_one(num_list: list[int]) -> int:
     total_length = len(num_list)
     ret = 0
     for i, _ in enumerate(num_list):
@@ -24,7 +23,7 @@ def part_one(num_list: List) -> int:
     return ret
 
 
-def part_two(num_list: List) -> int:
+def part_two(num_list: list[int]) -> int:
     total_length = len(num_list)
     half = total_length // 2
     ret = 0
@@ -35,20 +34,17 @@ def part_two(num_list: List) -> int:
     return ret
 
 
+@register
 @click.command()
-@click.argument("day")
-def day1(day: int):
-    assert day in [
+@click.argument("part", type=int)
+def day1(part: int) -> None:
+    assert part in [
         1,
         2,
-    ], f"The part number {day} is not implemented, please enter either 1 or 2."
+    ], f"The part number {part} is not implemented, please enter either 1 or 2."
     digit_list = get_digit_list()
-    if day == 1:
+    if part == 1:
         final_sum = part_one(digit_list)
     else:
         final_sum = part_two(digit_list)
-    print(f"The total sum for part {day} is {final_sum}.")
-
-
-if __name__ == "__main__":
-    day1()
+    print(f"The total sum for part {part} is {final_sum}.")
