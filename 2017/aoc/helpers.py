@@ -1,6 +1,6 @@
 from pathlib import Path
 
-DATA_DIR = Path("/home/matt/Documents/AoC/python_2017/data")
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
 def parse_input(input_file_dir: str):

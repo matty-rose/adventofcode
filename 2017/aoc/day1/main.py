@@ -1,30 +1,11 @@
-import argparse
-from pathlib import Path
 from typing import List
 
-import numpy
-
-from aoc.helpers import parse_input
-
-input_dir = Path("/home/matt/Documents/AoC/python_2017/data")
-
-
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-p",
-        "--part",
-        type=int,
-        default=1,
-        required=True,
-        help="Enter 1 or 2 based on which part of the problem to run",
-    )
-    args = parser.parse_args()
-    return args
+import click
+from aoc.helpers import DATA_DIR, parse_input
 
 
 def get_digit_list() -> List:
-    seq = parse_input(str(input_dir / "day1.txt"))
+    seq = parse_input(str(DATA_DIR / "day1.txt"))
     number_str = seq[0].strip()
     num_list = list(map(int, number_str))
     return num_list
@@ -54,15 +35,20 @@ def part_two(num_list: List) -> int:
     return ret
 
 
-if __name__ == "__main__":
-    args = get_args()
-    assert args.part in [
+@click.command()
+@click.argument("day")
+def day1(day: int):
+    assert day in [
         1,
         2,
-    ], f"The part number {args.part} is not implemented, please enter either 1 or 2."
+    ], f"The part number {day} is not implemented, please enter either 1 or 2."
     digit_list = get_digit_list()
-    if args.part == 1:
+    if day == 1:
         final_sum = part_one(digit_list)
     else:
         final_sum = part_two(digit_list)
-    print(f"The total sum for part {args.part} is {final_sum}.")
+    print(f"The total sum for part {day} is {final_sum}.")
+
+
+if __name__ == "__main__":
+    day1()
