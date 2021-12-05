@@ -24,8 +24,7 @@ fn main() {
     for sub in inventory::iter::<registry::DayCommand> {
         if let Some(_matches) = matches.subcommand_matches(&sub.name) {
             println!("executing {}", &sub.name);
-            let executor = &sub.func.func;
-            executor();
+            let _ = &sub.execute();
         }
     }
 }

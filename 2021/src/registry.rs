@@ -11,6 +11,11 @@ impl DayCommand {
     pub const fn new(name: &'static str, func: Function) -> Self {
         Self { name, func }
     }
+
+    pub fn execute(&self) -> Option<()> {
+        let executor = self.func.func;
+        executor()
+    }
 }
 
 inventory::collect!(DayCommand);
