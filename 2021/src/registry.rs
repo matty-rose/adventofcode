@@ -4,7 +4,7 @@ pub struct DayCommand {
 }
 
 pub struct Function {
-    pub func: fn() -> Option<()>,
+    pub func: fn(&str, Option<&str>) -> Option<()>,
 }
 
 impl DayCommand {
@@ -12,9 +12,9 @@ impl DayCommand {
         Self { name, func }
     }
 
-    pub fn execute(&self) -> Option<()> {
+    pub fn execute(&self, part: &str, file: Option<&str>) -> Option<()> {
         let executor = self.func.func;
-        executor()
+        executor(part, file)
     }
 }
 
