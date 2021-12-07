@@ -13,7 +13,7 @@ struct Number {
 }
 
 impl Number {
-    fn set_marked(mut self) {
+    fn set_marked(&mut self) {
         self.marked = true;
     }
 }
@@ -34,25 +34,25 @@ impl Board {
         }
     }
 
-    fn mark_number(mut self, value: usize) {
-        let matched = self.numbers.iter().filter(|&v| v.value == value);
+    fn mark_number(&mut self, value: usize) {
+        let matched = self.numbers.iter_mut().filter(|v| v.value == value);
         for mut num in matched {
-            num.set_marked();
+            &num.set_marked();
             if self.x_counts.contains_key(&num.x) {
-                *self.x_counts.get_mut(&num.x).unwrap() += 1
+                *self.x_counts.get_mut(&num.x).unwrap() += 1;
             } else {
-                *self.x_counts.get_mut(&num.x).unwrap() = 1
+                self.x_counts.insert(num.x, 1);
             }
 
             if self.y_counts.contains_key(&num.y) {
-                *self.y_counts.get_mut(&num.y).unwrap() += 1
+                *self.y_counts.get_mut(&num.y).unwrap() += 1;
             } else {
-                *self.y_counts.get_mut(&num.y).unwrap() = 1
+                self.y_counts.insert(num.y, 1);
             }
         }
     }
 
-    fn check_win(self) -> bool {
+    fn check_win(&self) -> bool {
         if self
             .x_counts
             .values()
@@ -78,10 +78,10 @@ impl Board {
         return false;
     }
 
-    fn unmarked_sum(self) -> usize {
+    fn unmarked_sum(&self) -> usize {
         self.numbers
             .iter()
-            .filter(|n| n.marked)
+            .filter(|n| !n.marked)
             .map(|n| n.value)
             .sum()
     }
@@ -110,6 +110,7 @@ fn parse(lines: &Vec<String>) -> Game {
             // Reset
             board = Board::new();
             row = 0;
+            continue;
         }
 
         for (col, num) in line
@@ -117,34 +118,34 @@ fn parse(lines: &Vec<String>) -> Game {
             .map(|n| n.parse::<usize>().unwrap())
             .enumerate()
         {
-            board.numbers.push(Number {
+            let num = Number {
                 x: col,
                 y: row,
                 value: num,
                 marked: false,
-            });
+            };
+            board.numbers.push(num);
         }
 
         row += 1;
     }
 
+    // Push the last board
+    boards.push(board);
+
     Game { numbers, boards }
 }
 
 fn part1(mut game: Game) {
-    let numbers = game.numbers.clone();
-    let boards = game.boards.clone();
-
-    for num in numbers {
-        for mut board in &boards {
-            board.mark_number(num);
+    for num in &mut game.numbers {
+        for mut board in &mut game.boards.iter_mut() {
+            board.mark_number(*num);
             if board.check_win() {
-                println!("Solution to part 1 is {}", num * board.unmarked_sum());
-                break;
+                println!("Solution to part 1 is {}", *num * board.unmarked_sum());
+                return;
             }
         }
     }
-    println!("Marked Game: {:?}", game);
 }
 
 fn part2(bins: Vec<String>) {
@@ -155,7 +156,6 @@ fn main(part: &str, file: Option<&str>) -> Option<()> {
     let filename = file.expect("expected a file for this problem");
     let lines: Vec<String> = utils::read_lines(filename).expect("could not load lines");
     let game = parse(&lines);
-    println!("Game: {:?}", game);
     match part {
         "1" => part1(game),
         "2" => part2(lines),
