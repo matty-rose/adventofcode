@@ -17,7 +17,7 @@ impl Line {
             return Vec::new();
         }
 
-        println!("Line: {:?}", self);
+        println!("HV Line: {:?}", self);
         let mut pts: Vec<Point> = vec![self.start, self.end];
         let mut pt = self.start;
         if self.start.0 < self.end.0 {
@@ -43,6 +43,55 @@ impl Line {
                 pt = (pt.0, y);
                 println!("Point: {:?}", pt);
                 pts.push(pt);
+            }
+        }
+
+        return pts;
+    }
+
+    fn interpolate_diagonal_points(&self) -> Vec<Point> {
+        if (self.start.0 as isize - self.end.0 as isize).abs()
+            != (self.start.1 as isize - self.end.1 as isize).abs()
+        {
+            println!("not a diagonal line");
+            return Vec::new();
+        }
+
+        println!("Diagonal Line: {:?}", self);
+        let mut x = self.start.0;
+        let mut y = self.start.1;
+        let mut pts: Vec<Point> = vec![self.start];
+        // x is less, y is less
+        if self.start.0 < self.end.0 && self.start.1 < self.end.1 {
+            while x != self.end.0 && y != self.end.1 {
+                x += 1;
+                y += 1;
+                println!("Point: {:?}", (x, y));
+                pts.push((x, y));
+            }
+        // x is less, y is greater
+        } else if self.start.0 < self.end.0 && self.start.0 > self.end.1 {
+            while x != self.end.0 && y != self.end.1 {
+                x += 1;
+                y -= 1;
+                println!("Point: {:?}", (x, y));
+                pts.push((x, y));
+            }
+        // x is greater, y is greater
+        } else if self.start.0 > self.end.0 && self.start.1 > self.end.1 {
+            while x != self.end.0 && y != self.end.1 {
+                x -= 1;
+                y -= 1;
+                println!("Point: {:?}", (x, y));
+                pts.push((x, y));
+            }
+        // x is greater, y is less
+        } else if self.start.0 > self.end.0 && self.start.1 < self.end.1 {
+            while x != self.end.0 && y != self.end.1 {
+                x -= 1;
+                y += 1;
+                println!("Point: {:?}", (x, y));
+                pts.push((x, y));
             }
         }
 
@@ -77,11 +126,26 @@ fn part1(lines: Vec<Line>) {
     }
 
     let dangerous = pts.values().filter(|&v| *v >= 2).count();
-    println!("{:?}", dangerous)
+    println!("Solution to part 1 is {:?}", dangerous)
 }
 
-fn part2(lines: &Vec<Line>) {
-    unimplemented!()
+fn part2(lines: Vec<Line>) {
+    let mut pts: HashMap<(usize, usize), usize> = HashMap::new();
+
+    for l in lines.iter() {
+        for p in l.interpolate_hv_points() {
+            let counter = pts.entry(p).or_insert(0);
+            *counter += 1;
+        }
+
+        for p in l.interpolate_diagonal_points() {
+            let counter = pts.entry(p).or_insert(0);
+            *counter += 1;
+        }
+    }
+
+    let dangerous = pts.values().filter(|&v| *v >= 2).count();
+    println!("Solution to part 2 is {:?}", dangerous)
 }
 
 fn main(part: &str, file: Option<&str>) -> Option<()> {
@@ -91,7 +155,7 @@ fn main(part: &str, file: Option<&str>) -> Option<()> {
     println!("{:?}", lns);
     match part {
         "1" => part1(lns),
-        "2" => part2(&lns),
+        "2" => part2(lns),
         _ => (),
     }
     None
