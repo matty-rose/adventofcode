@@ -151,7 +151,6 @@ fn part1(mut game: Game) {
 }
 
 fn part2(mut game: Game) {
-    let mut last: usize = 0;
     let mut board_count: usize = 0;
     let board_total_count = game.boards.len();
     for num in &mut game.numbers {
@@ -160,9 +159,8 @@ fn part2(mut game: Game) {
             if board.check_win() && !board.won {
                 board.won = true;
                 board_count += 1;
-                last = *num * board.unmarked_sum();
                 if board_count == board_total_count {
-                    println!("Solution to part 2 is {}", last);
+                    println!("Solution to part 2 is {}", *num * board.unmarked_sum());
                     return;
                 }
             }
