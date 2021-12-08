@@ -70,7 +70,7 @@ impl Line {
                 pts.push((x, y));
             }
         // x is less, y is greater
-        } else if self.start.0 < self.end.0 && self.start.0 > self.end.1 {
+        } else if self.start.0 < self.end.0 && self.start.1 > self.end.1 {
             while x != self.end.0 && y != self.end.1 {
                 x += 1;
                 y -= 1;
@@ -152,7 +152,6 @@ fn main(part: &str, file: Option<&str>) -> Option<()> {
     let filename = file.expect("expected a file for this problem");
     let lines: Vec<String> = utils::read_lines(filename).expect("could not load lines");
     let mut lns: Vec<Line> = parse(&lines);
-    println!("{:?}", lns);
     match part {
         "1" => part1(lns),
         "2" => part2(lns),
