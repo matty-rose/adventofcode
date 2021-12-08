@@ -23,6 +23,7 @@ struct Board {
     numbers: Vec<Number>,
     x_counts: HashMap<usize, usize>,
     y_counts: HashMap<usize, usize>,
+    won: bool,
 }
 
 impl Board {
@@ -31,13 +32,14 @@ impl Board {
             numbers: Vec::new(),
             x_counts: HashMap::from([(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)]),
             y_counts: HashMap::from([(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)]),
+            won: false,
         }
     }
 
     fn mark_number(&mut self, value: usize) {
         let matched = self.numbers.iter_mut().filter(|v| v.value == value);
-        for mut num in matched {
-            &num.set_marked();
+        for num in matched {
+            let _ = &num.set_marked();
             if self.x_counts.contains_key(&num.x) {
                 *self.x_counts.get_mut(&num.x).unwrap() += 1;
             } else {
@@ -138,7 +140,7 @@ fn parse(lines: &Vec<String>) -> Game {
 
 fn part1(mut game: Game) {
     for num in &mut game.numbers {
-        for mut board in &mut game.boards.iter_mut() {
+        for board in &mut game.boards.iter_mut() {
             board.mark_number(*num);
             if board.check_win() {
                 println!("Solution to part 1 is {}", *num * board.unmarked_sum());
@@ -148,8 +150,24 @@ fn part1(mut game: Game) {
     }
 }
 
-fn part2(bins: Vec<String>) {
-    unimplemented!()
+fn part2(mut game: Game) {
+    let mut last: usize = 0;
+    let mut board_count: usize = 0;
+    let board_total_count = game.boards.len();
+    for num in &mut game.numbers {
+        for board in &mut game.boards.iter_mut() {
+            board.mark_number(*num);
+            if board.check_win() && !board.won {
+                board.won = true;
+                board_count += 1;
+                last = *num * board.unmarked_sum();
+                if board_count == board_total_count {
+                    println!("Solution to part 2 is {}", last);
+                    return;
+                }
+            }
+        }
+    }
 }
 
 fn main(part: &str, file: Option<&str>) -> Option<()> {
@@ -158,7 +176,7 @@ fn main(part: &str, file: Option<&str>) -> Option<()> {
     let game = parse(&lines);
     match part {
         "1" => part1(game),
-        "2" => part2(lines),
+        "2" => part2(game),
         _ => (),
     }
     None
