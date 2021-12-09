@@ -151,7 +151,7 @@ fn part2(lines: Vec<Line>) {
 fn main(part: &str, file: Option<&str>) -> Option<()> {
     let filename = file.expect("expected a file for this problem");
     let lines: Vec<String> = utils::read_lines(filename).expect("could not load lines");
-    let mut lns: Vec<Line> = parse(&lines);
+    let lns: Vec<Line> = parse(&lines);
     match part {
         "1" => part1(lns),
         "2" => part2(lns),
