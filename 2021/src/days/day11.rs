@@ -100,7 +100,7 @@ impl Cavern {
         // Count flashes
         let flash_count = self.octopi.iter().flatten().filter(|o| o.flashed).count();
 
-        if break_on_sync && flash_count == 100 {
+        if break_on_sync && flash_count == self.height * self.width {
             return (flash_count, true);
         }
 
@@ -120,7 +120,7 @@ impl Cavern {
 
 fn part1(mut cavern: Cavern) {
     let mut flash_count = 0;
-    for idx in 0..100 {
+    for _idx in 0..100 {
         let (n, _) = cavern.step(false);
         flash_count += n;
     }
@@ -128,11 +128,10 @@ fn part1(mut cavern: Cavern) {
 }
 
 fn part2(mut cavern: Cavern) {
-    let mut flash_count = 0;
     let mut step = 0;
     loop {
         step += 1;
-        let (n, sync) = cavern.step(true);
+        let (_n, sync) = cavern.step(true);
         if sync {
             println!("First step synced is {}", step);
             break;
@@ -143,8 +142,7 @@ fn part2(mut cavern: Cavern) {
 fn main(part: &str, file: Option<&str>) -> Option<()> {
     let filename = file.expect("expected a file for this problem");
     let lines: Vec<String> = utils::read_lines(filename).expect("could not load lines");
-    let s = lines.join("\n");
-    let cavern = Cavern::from_str(&s).unwrap();
+    let cavern = Cavern::from_str(&lines.join("\n")).unwrap();
     match part {
         "1" => part1(cavern),
         "2" => part2(cavern),
