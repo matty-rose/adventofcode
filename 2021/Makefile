@@ -12,3 +12,4 @@ _check-day-defined:
 .PHONY: day
 day: _check-day-defined
 	cp src/days/template.rs src/days/day${DAY}.rs
+	echo "mod day${DAY};" >> src/days/mod.rs
