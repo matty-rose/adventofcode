@@ -57,22 +57,41 @@ impl FromStr for Paper {
 }
 
 impl Paper {
+    fn draw(&self) {
+        let max_x = self.dots.iter().map(|p| p.x).max().unwrap();
+        let max_y = self.dots.iter().map(|p| p.y).max().unwrap();
+
+        for y in 0..max_y + 1 {
+            for x in 0..max_x + 1 {
+                if self.dots.iter().any(|p| p.x == x && p.y == y) {
+                    print!("#");
+                } else {
+                    print!(" ");
+                }
+            }
+            println!();
+        }
+    }
+
     fn fold(&mut self) -> Option<(Paper, usize)> {
         let f = self.folds.pop_front();
         let new_folds = self.folds.clone();
         let mut overlap_count = 0;
         match f {
             Some(Fold::X(x)) => {
-                println!("folding along x axis at {}", x);
                 let mut root_dots: Vec<Point> =
                     self.dots.iter().cloned().filter(|p| p.x < x).collect();
+                let fold_dots: Vec<Point> = self.dots.iter().cloned().filter(|p| p.x > x).collect();
                 let mut new_dots: Vec<Point> = Vec::new();
-                for p in &root_dots {
-                    println!("point to the left of fold line {:?}", p);
-                    let mirror_x = (x - p.x) + x;
-                    if let Some(np) = self.dots.iter().find(|fp| fp.x == mirror_x && fp.y == p.y) {
+                for p in &fold_dots {
+                    let mirror_x = x - (p.x - x);
+                    if let Some(_np) = root_dots.iter().find(|fp| fp.x == mirror_x && fp.y == p.y) {
                         overlap_count += 1;
-                        new_dots.push(np.clone());
+                    } else {
+                        new_dots.push(Point {
+                            x: mirror_x,
+                            y: p.y,
+                        });
                     };
                 }
                 root_dots.append(&mut new_dots);
@@ -85,16 +104,19 @@ impl Paper {
                 ))
             }
             Some(Fold::Y(y)) => {
-                println!("folding along y axis at {}", y);
                 let mut root_dots: Vec<Point> =
                     self.dots.iter().cloned().filter(|p| p.y < y).collect();
+                let fold_dots: Vec<Point> = self.dots.iter().cloned().filter(|p| p.y > y).collect();
                 let mut new_dots: Vec<Point> = Vec::new();
-                for p in &root_dots {
-                    println!("point above the fold line {:?}", p);
-                    let mirror_y = (y - p.y) + y;
-                    if let Some(np) = self.dots.iter().find(|fp| fp.y == mirror_y && fp.x == p.x) {
+                for p in &fold_dots {
+                    let mirror_y = y - (p.y - y);
+                    if let Some(_np) = self.dots.iter().find(|fp| fp.y == mirror_y && fp.x == p.x) {
                         overlap_count += 1;
-                        new_dots.push(np.clone())
+                    } else {
+                        new_dots.push(Point {
+                            x: p.x,
+                            y: mirror_y,
+                        })
                     };
                 }
                 root_dots.append(&mut new_dots);
@@ -124,8 +146,11 @@ fn part1(mut paper: Paper) {
     );
 }
 
-fn part2(paper: Paper) {
-    unimplemented!()
+fn part2(mut paper: Paper) {
+    while let Some((new_paper, _oc)) = paper.fold() {
+        paper = new_paper;
+    }
+    paper.draw();
 }
 
 fn main(part: &str, file: Option<&str>) -> Option<()> {
