@@ -77,13 +77,12 @@ impl Paper {
         let f = self.folds.pop_front();
         let new_folds = self.folds.clone();
         let mut overlap_count = 0;
-        match f {
+        let mut new_dots: Vec<Point> = Vec::new();
+        let (dots, folds, oc) = match f {
             Some(Fold::X(x)) => {
                 let mut root_dots: Vec<Point> =
                     self.dots.iter().cloned().filter(|p| p.x < x).collect();
-                let fold_dots: Vec<Point> = self.dots.iter().cloned().filter(|p| p.x > x).collect();
-                let mut new_dots: Vec<Point> = Vec::new();
-                for p in &fold_dots {
+                self.dots.iter().cloned().filter(|p| p.x > x).for_each(|p| {
                     let mirror_x = x - (p.x - x);
                     if let Some(_np) = root_dots.iter().find(|fp| fp.x == mirror_x && fp.y == p.y) {
                         overlap_count += 1;
@@ -93,22 +92,14 @@ impl Paper {
                             y: p.y,
                         });
                     };
-                }
+                });
                 root_dots.append(&mut new_dots);
-                Some((
-                    Paper {
-                        dots: root_dots,
-                        folds: new_folds,
-                    },
-                    overlap_count,
-                ))
+                (root_dots, new_folds, overlap_count)
             }
             Some(Fold::Y(y)) => {
                 let mut root_dots: Vec<Point> =
                     self.dots.iter().cloned().filter(|p| p.y < y).collect();
-                let fold_dots: Vec<Point> = self.dots.iter().cloned().filter(|p| p.y > y).collect();
-                let mut new_dots: Vec<Point> = Vec::new();
-                for p in &fold_dots {
+                self.dots.iter().cloned().filter(|p| p.y > y).for_each(|p| {
                     let mirror_y = y - (p.y - y);
                     if let Some(_np) = self.dots.iter().find(|fp| fp.y == mirror_y && fp.x == p.x) {
                         overlap_count += 1;
@@ -118,23 +109,17 @@ impl Paper {
                             y: mirror_y,
                         })
                     };
-                }
+                });
                 root_dots.append(&mut new_dots);
-                Some((
-                    Paper {
-                        dots: root_dots,
-                        folds: new_folds,
-                    },
-                    overlap_count,
-                ))
+                (root_dots, new_folds, overlap_count)
             }
-            _ => None,
-        }
+            _ => return None,
+        };
+        Some((Paper { dots, folds }, oc))
     }
 }
 
 fn part1(mut paper: Paper) {
-    println!("{:?}", paper);
     // New count after one fold is total number of dots - number that overlap
     let total_count = paper.dots.len();
     let (_new_paper, overlap_count) = paper.fold().unwrap();
