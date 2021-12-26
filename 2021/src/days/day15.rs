@@ -59,10 +59,7 @@ impl Cavern {
         self.nodes
             .iter()
             .copied()
-            .filter(|n| {
-                (n.x == x && (n.y == y.wrapping_sub(1) || n.y == y + 1))
-                    || (n.y == y && (n.x == x.wrapping_sub(1) || n.x == x + 1))
-            })
+            .filter(|n| (n.x == x && (n.y == y + 1)) || (n.y == y && (n.x == x + 1)))
             .collect()
     }
 
@@ -121,6 +118,7 @@ fn part2(mut cavern: Cavern) {
     // cavern.draw();
     println!("Expanding cavern");
     cavern.expand();
+    let goal = *cavern.nodes.last().unwrap();
     // cavern.draw();
     println!("Solving shortest path");
     let res = dijkstra(
@@ -132,7 +130,7 @@ fn part2(mut cavern: Cavern) {
                 .map(|nb| (*nb, nb.entry_cost))
                 .collect::<Vec<(Node, usize)>>()
         },
-        |n| *n == *cavern.nodes.last().unwrap(),
+        |n| *n == goal,
     );
     println!("cost of shortest path is {:?}", res.unwrap().1);
 }
