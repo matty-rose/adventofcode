@@ -1,13 +1,15 @@
 use crate::registry::{DayCommand, Function};
 use crate::utils;
+use pathfinding::directed::dijkstra::dijkstra;
 use std::str::FromStr;
 use std::string::ParseError;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 struct Node {
     x: usize,
     y: usize,
     entry_cost: usize,
+    visited: bool,
 }
 
 #[derive(Debug)]
@@ -26,6 +28,7 @@ impl FromStr for Cavern {
                     x,
                     y,
                     entry_cost: cost.to_digit(10).unwrap() as usize,
+                    visited: false,
                 })
             }
         }
@@ -47,11 +50,19 @@ impl Cavern {
     }
 }
 
-// Just implement dijkstra - node neighbours are euclidean neighbours, "distances" are the values
-// of entering a node
 fn part1(cavern: Cavern) {
-    println!("{:?}", cavern);
-    println!("neighbours {:?}", cavern.neighbours(0, 0));
+    let res = dijkstra(
+        cavern.nodes.get(0).unwrap(),
+        |n| {
+            cavern
+                .neighbours(n.x, n.y)
+                .iter()
+                .map(|nb| (*nb, nb.entry_cost))
+                .collect::<Vec<(Node, usize)>>()
+        },
+        |n| *n == *cavern.nodes.last().unwrap(),
+    );
+    println!("cost of shortest path is {:?}", res.unwrap().1);
 }
 
 fn part2(lines: Vec<String>) {
