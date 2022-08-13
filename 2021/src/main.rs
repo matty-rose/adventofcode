@@ -13,7 +13,7 @@ fn init_app() -> App<'static, 'static> {
 
     for sub in inventory::iter::<registry::DayCommand> {
         app = app.subcommand(
-            SubCommand::with_name(&sub.name)
+            SubCommand::with_name(sub.name)
                 .arg(
                     Arg::with_name("part")
                         .short("p")
@@ -41,11 +41,7 @@ fn main() {
     for sub in inventory::iter::<registry::DayCommand> {
         if let Some(matched_sub) = matches.subcommand_matches(&sub.name) {
             let part = matched_sub.value_of("part").unwrap();
-            let file = if let Some(f) = matched_sub.value_of("file") {
-                Some(f)
-            } else {
-                None
-            };
+            let file = matched_sub.value_of("file");
             println!("executing {}", &sub.name);
             let _ = &sub.execute(part, file);
         }
