@@ -25,13 +25,13 @@ fn part1(lines: Vec<String>) {
 
 fn part2(lines: Vec<String>) {
     let mut result = 0;
-    for i in (0..lines.len()).step_by(3) {
-        let set_one: HashSet<char> = lines[i].chars().collect();
-        let set_two: HashSet<char> = lines[i + 1].chars().collect();
-        let set_three: HashSet<char> = lines[i + 2].chars().collect();
-
-        let overlap: HashSet<char> = set_one.intersection(&set_two).copied().collect();
-        result += char_score(overlap.intersection(&set_three).next().unwrap());
+    for chunk in lines.chunks(3) {
+        let sets: Vec<HashSet<char>> = chunk
+            .iter()
+            .map(|s| s.chars().collect::<HashSet<char>>())
+            .collect();
+        let overlap: HashSet<char> = sets[0].intersection(&sets[1]).copied().collect();
+        result += char_score(overlap.intersection(&sets[2]).next().unwrap());
     }
     println!("{result}");
 }
