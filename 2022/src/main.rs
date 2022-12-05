@@ -1,3 +1,4 @@
+#![feature(iter_next_chunk)]
 mod days;
 mod registry;
 mod utils;
