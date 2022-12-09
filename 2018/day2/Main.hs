@@ -18,11 +18,31 @@ p1 s =
   map (\x -> (containsCount 2 x, containsCount 3 x)) $
   map getCharCounts $ lines s
 
-p2 :: String -> [String]
-p2 s = lines s
+compareString :: String -> String -> Int
+compareString a b =
+  sum
+    [ if (a !! i) /= (b !! i)
+      then 1
+      else 0
+    | i <- [0 .. (length a - 1)]
+    ]
+
+calcOverlap :: String -> String -> String
+calcOverlap a b = [a !! i | i <- [0 .. (length a - 1)], (a !! i) == (b !! i)]
+
+cartesianProduct :: [a] -> [b] -> [(a, b)]
+cartesianProduct xs ys =
+  [(x, y) | (ix, x) <- zip [0 ..] xs, (iy, y) <- zip [0 ..] ys, iy >= ix]
+
+p2 :: String -> String
+p2 s =
+  head $
+  map (\x -> calcOverlap (fst x) (snd x)) $
+  filter (\x -> compareString (fst x) (snd x) == 1) $
+  cartesianProduct (lines s) (lines s)
 
 main :: IO ()
 main = do
   file <- readFile "input.txt"
-  print $ p1 file
-  -- print $ p2 file
+  -- print $ p1 file
+  print $ p2 file
