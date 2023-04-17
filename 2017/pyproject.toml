@@ -10,7 +10,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9.7,<3.11"
-numpy = "^1.21.4"
+numpy = "^1.22.0"
 click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
