@@ -10,3 +10,4 @@ Attempting the Advent of Code in a variety of programming languages over a varie
 | 2020 | [Go](./2020)       |
 | 2021 | [Rust](./2021)       |
 | 2022 | [Rust again](./2022)       |
+| 2023 | [Rust again again](./2023)       |
