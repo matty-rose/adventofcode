@@ -2,7 +2,18 @@ use crate::registry::{DayCommand, Function};
 use crate::utils;
 
 fn part1(lines: Vec<String>) {
-    todo!()
+    let res: u32 = lines
+        .iter()
+        .map(|l| l.chars().filter(|c| c.is_ascii_digit()).collect::<String>())
+        .map(|s| {
+            let mut r = String::new();
+            r.push(s.chars().next().unwrap());
+            r.push(s.chars().last().unwrap());
+            r.parse::<u32>().unwrap()
+        })
+        .sum();
+
+    println!("Sum is {res}");
 }
 
 fn part2(lines: Vec<String>) {
