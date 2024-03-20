@@ -15,7 +15,7 @@ click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.910"
-black = "^21.11b1"
+black = "^24.3"
 flake8 = "^4.0.1"
 isort = "^5.10.1"
 autoflake = "^1.4"
